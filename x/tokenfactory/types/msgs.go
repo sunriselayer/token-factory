@@ -2,11 +2,10 @@ package types
 
 import (
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-
-	"github.com/osmosis-labs/osmosis/osmomath"
 )
 
 // constants
@@ -77,7 +76,7 @@ func (m MsgMint) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", err)
 	}
 
-	if !m.Amount.IsValid() || m.Amount.Amount.Equal(osmomath.ZeroInt()) {
+	if !m.Amount.IsValid() || m.Amount.Amount.Equal(math.ZeroInt()) {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, m.Amount.String())
 	}
 
@@ -116,7 +115,7 @@ func (m MsgBurn) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", err)
 	}
 
-	if !m.Amount.IsValid() || m.Amount.Amount.Equal(osmomath.ZeroInt()) {
+	if !m.Amount.IsValid() || m.Amount.Amount.Equal(math.ZeroInt()) {
 		return errorsmod.Wrap(sdkerrors.ErrInvalidCoins, m.Amount.String())
 	}
 
