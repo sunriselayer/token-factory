@@ -1,0 +1,89 @@
+package tokenfactory
+
+import (
+	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
+)
+
+// AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.
+func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
+	return &autocliv1.ModuleOptions{
+		Query: &autocliv1.ServiceCommandDescriptor{
+			Service: "sunrise.tokenfactory.v1.Query",
+			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
+				{
+					RpcMethod: "Params",
+					Use:       "params",
+					Short:     "Shows the parameters of the module",
+				},
+				{
+					RpcMethod:      "DenomAuthorityMetadata",
+					Use:            "denom-authority-metadata [denom]",
+					Short:          "Shows the authority metadata for a specific denom",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "denom"}},
+				},
+				{
+					RpcMethod:      "DenomsFromCreator",
+					Use:            "denoms-from-creator [address]",
+					Short:          "Shows all tokens created by a specific creator address",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "creator"}},
+				},
+				{
+					RpcMethod:      "BeforeSendHookAddress",
+					Use:            "before-send-hook-address [denom]",
+					Short:          "Shows the address registered for the before send hook",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "denom"}},
+				},
+				{
+					RpcMethod:      "AllBeforeSendHooksAddresses",
+					Use:            "all-before-send-hooks",
+					Short:          "Shows all before send hooks registered",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{},
+				},
+				// this line is used by ignite scaffolding # autocli/query
+			},
+		},
+		Tx: &autocliv1.ServiceCommandDescriptor{
+			Service:              "sunrise.tokenfactory.v1.Msg",
+			EnhanceCustomCommand: true, // only required if you want to use the custom command
+			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
+				{
+					RpcMethod:      "CreateDenom",
+					Use:            "create-denom [sub_denom]",
+					Short:          "Send a create-denom tx",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "sub_denom"}},
+				},
+				{
+					RpcMethod:      "Mint",
+					Use:            "mint [amount] [mint_to_address]",
+					Short:          "Send a mint tx",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "amount"}, {ProtoField: "mint_to_address"}},
+				},
+				{
+					RpcMethod:      "Burn",
+					Use:            "burn [amount] [burn_from_address]",
+					Short:          "Send a burn tx",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "amount"}, {ProtoField: "burn_from_address"}},
+				},
+				{
+					RpcMethod:      "ChangeAdmin",
+					Use:            "change-admin [denom] [new_admin]",
+					Short:          "Send a change-admin tx",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "denom"}, {ProtoField: "new_admin"}},
+				},
+				{
+					RpcMethod:      "SetBeforeSendHook",
+					Use:            "set-before-send-hook [denom] [cosmwasm_address]",
+					Short:          "Send a set-before-send-hook tx",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "denom"}, {ProtoField: "cosmwasm_address"}},
+				},
+				{
+					RpcMethod:      "SetDenomMetadata",
+					Use:            "set-denom-metadata [metadata]",
+					Short:          "Send a set-denom-metadata tx",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{{ProtoField: "metadata"}},
+				},
+				// this line is used by ignite scaffolding # autocli/tx
+			},
+		},
+	}
+}
