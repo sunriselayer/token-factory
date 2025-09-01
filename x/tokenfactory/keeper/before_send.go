@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"strings"
 
+	wasmvmtypes "github.com/CosmWasm/wasmvm/v2/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/osmosis-labs/osmosis/osmoutils"
 	"github.com/sunriselayer/token-factory/x/tokenfactory/types"
 
 	errorsmod "cosmossdk.io/errors"
@@ -141,18 +141,24 @@ func (k Keeper) callBeforeSendListener(context context.Context, from, to sdk.Acc
 			if blockBeforeSend {
 				msg := types.BlockBeforeSendSudoMsg{
 					BlockBeforeSend: types.BlockBeforeSendMsg{
-						From:   from.String(),
-						To:     to.String(),
-						Amount: osmoutils.CWCoinFromSDKCoin(coin),
+						From: from.String(),
+						To:   to.String(),
+						Amount: wasmvmtypes.Coin{
+							Denom:  coin.Denom,
+							Amount: coin.Amount.String(),
+						},
 					},
 				}
 				msgBz, err = json.Marshal(msg)
 			} else {
 				msg := types.TrackBeforeSendSudoMsg{
 					TrackBeforeSend: types.TrackBeforeSendMsg{
-						From:   from.String(),
-						To:     to.String(),
-						Amount: osmoutils.CWCoinFromSDKCoin(coin),
+						From: from.String(),
+						To:   to.String(),
+						Amount: wasmvmtypes.Coin{
+							Denom:  coin.Denom,
+							Amount: coin.Amount.String(),
+						},
 					},
 				}
 				msgBz, err = json.Marshal(msg)
