@@ -22,13 +22,9 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
-	"github.com/osmosis-labs/osmosis/osmomath"
-	"github.com/osmosis-labs/osmosis/v30/simulation/simtypes"
-	simulation "github.com/osmosis-labs/osmosis/v30/x/tokenfactory/simulation"
-
-	"github.com/osmosis-labs/osmosis/v30/x/tokenfactory/client/cli"
-	"github.com/osmosis-labs/osmosis/v30/x/tokenfactory/keeper"
-	"github.com/osmosis-labs/osmosis/v30/x/tokenfactory/types"
+	"github.com/sunriselayer/token-factory/x/tokenfactory/client/cli"
+	"github.com/sunriselayer/token-factory/x/tokenfactory/keeper"
+	"github.com/sunriselayer/token-factory/x/tokenfactory/types"
 )
 
 var (
@@ -164,25 +160,3 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 
 // ConsensusVersion implements ConsensusVersion.
 func (AppModule) ConsensusVersion() uint64 { return 1 }
-
-// ___________________________________________________________________________
-
-// AppModuleSimulationV2 functions
-
-// GenerateGenesisState creates a randomized GenState of the tokenfactory module.
-func (am AppModule) SimulatorGenesisState(simState *module.SimulationState, s *simtypes.SimCtx) {
-	tfDefaultGen := types.DefaultGenesis()
-	tfDefaultGen.Params.DenomCreationFee = sdk.NewCoins(sdk.NewCoin("stake", osmomath.NewInt(10000000)))
-	tfDefaultGenJson := simState.Cdc.MustMarshalJSON(tfDefaultGen)
-	simState.GenState[types.ModuleName] = tfDefaultGenJson
-}
-
-// WeightedOperations returns the all the lockup module operations with their respective weights.
-func (am AppModule) Actions() []simtypes.Action {
-	return []simtypes.Action{
-		simtypes.NewMsgBasedAction("create token factory token", am.keeper, simulation.RandomMsgCreateDenom),
-		simtypes.NewMsgBasedAction("mint token factory token", am.keeper, simulation.RandomMsgMintDenom),
-		simtypes.NewMsgBasedAction("burn token factory token", am.keeper, simulation.RandomMsgBurnDenom),
-		simtypes.NewMsgBasedAction("change admin token factory token", am.keeper, simulation.RandomMsgChangeAdmin),
-	}
-}
