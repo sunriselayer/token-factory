@@ -678,7 +678,7 @@ func (*UnimplementedQueryServer) AllBeforeSendHooksAddresses(ctx context.Context
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
-	s.RegisterService(&_Query_serviceDesc, srv)
+	s.RegisterService(&Query_serviceDesc, srv)
 }
 
 func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -771,7 +771,7 @@ func _Query_AllBeforeSendHooksAddresses_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
-var _Query_serviceDesc = grpc.ServiceDesc{
+var Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "osmosis.tokenfactory.v1beta1.Query",
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
