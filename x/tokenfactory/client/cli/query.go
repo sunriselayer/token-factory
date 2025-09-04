@@ -4,6 +4,8 @@ import (
 
 	// "strings"
 
+	"fmt"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
@@ -11,48 +13,110 @@ import (
 	// "github.com/cosmos/cosmos-sdk/client/flags"
 	// sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/osmosis-labs/osmosis/osmoutils/osmocli"
 	"github.com/sunriselayer/token-factory/x/tokenfactory/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module
 func GetQueryCmd() *cobra.Command {
-	cmd := osmocli.QueryIndexCmd(types.ModuleName)
-
-	osmocli.AddQueryCmd(cmd, types.NewQueryClient, GetCmdDenomAuthorityMetadata)
-	osmocli.AddQueryCmd(cmd, types.NewQueryClient, GetCmdDenomsFromCreator)
-	osmocli.AddQueryCmd(cmd, types.NewQueryClient, GetCmdAllBeforeSendHooks)
+	// Group tokenfactory queries under a subcommand
+	cmd := &cobra.Command{
+		Use:                        types.ModuleName,
+		Short:                      fmt.Sprintf("Querying commands for the %s module", types.ModuleName),
+		DisableFlagParsing:         true,
+		SuggestionsMinimumDistance: 2,
+		RunE:                       client.ValidateCmd,
+	}
 
 	cmd.AddCommand(
-		osmocli.GetParams[*types.QueryParamsRequest](
-			types.ModuleName, types.NewQueryClient),
+		GetCmdDenomAuthorityMetadata(),
+		GetCmdDenomsFromCreator(),
+		GetCmdAllBeforeSendHooks(),
 	)
 
 	return cmd
 }
 
-func GetCmdDenomAuthorityMetadata() (*osmocli.QueryDescriptor, *types.QueryDenomAuthorityMetadataRequest) {
-	return &osmocli.QueryDescriptor{
-		Use:   "denom-authority-metadata",
+// GetCmdDenomAuthorityMetadata returns the authority metadata for a queried denom
+func GetCmdDenomAuthorityMetadata() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "denom-authority-metadata [denom] [flags]",
 		Short: "Get the authority metadata for a specific denom",
-		Long: `{{.Short}}{{.ExampleHeader}}
-		{{.CommandPrefix}} uatom`,
-	}, &types.QueryDenomAuthorityMetadataRequest{}
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.DenomAuthorityMetadata(cmd.Context(), &types.QueryDenomAuthorityMetadataRequest{
+				Denom: args[0],
+			})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
 }
 
-func GetCmdDenomsFromCreator() (*osmocli.QueryDescriptor, *types.QueryDenomsFromCreatorRequest) {
-	return &osmocli.QueryDescriptor{
-		Use:   "denoms-from-creator",
+// GetCmdDenomsFromCreator a command to get a list of all tokens created by a specific creator address
+func GetCmdDenomsFromCreator() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "denoms-from-creator [creator address] [flags]",
 		Short: "Returns a list of all tokens created by a specific creator address",
-		Long: `{{.Short}}{{.ExampleHeader}}
-		{{.CommandPrefix}} <address>`,
-	}, &types.QueryDenomsFromCreatorRequest{}
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.DenomsFromCreator(cmd.Context(), &types.QueryDenomsFromCreatorRequest{
+				Creator: args[0],
+			})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
 }
-func GetCmdAllBeforeSendHooks() (*osmocli.QueryDescriptor, *types.QueryAllBeforeSendHooksAddressesRequest) {
-	return &osmocli.QueryDescriptor{
-		Use:   "all-before-send-hooks",
+
+func GetCmdAllBeforeSendHooks() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "all-before-send-hooks [flags]",
 		Short: "Returns a list of all before send hooks registered",
-	}, &types.QueryAllBeforeSendHooksAddressesRequest{}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.AllBeforeSendHooksAddresses(cmd.Context(), &types.QueryAllBeforeSendHooksAddressesRequest{})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
 }
 
 // GetCmdDenomAuthorityMetadata returns the authority metadata for a queried denom
