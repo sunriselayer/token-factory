@@ -31,5 +31,5 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgSetBeforeSendHook{},
 		&MsgForceTransfer{},
 	)
-	msgservice.RegisterMsgServiceDesc(registry, &Msg_serviceDesc)
+	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }

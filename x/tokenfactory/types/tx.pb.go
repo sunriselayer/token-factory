@@ -6,9 +6,6 @@ package types
 import (
 	context "context"
 	fmt "fmt"
-	io "io"
-	math "math"
-	math_bits "math/bits"
 
 	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/cosmos-sdk/types/msgservice"
@@ -20,6 +17,9 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	io "io"
+	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -951,7 +951,7 @@ func (*UnimplementedMsgServer) ForceTransfer(ctx context.Context, req *MsgForceT
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
-	s.RegisterService(&Msg_serviceDesc, srv)
+	s.RegisterService(&_Msg_serviceDesc, srv)
 }
 
 func _Msg_CreateDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -1080,7 +1080,7 @@ func _Msg_ForceTransfer_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
-var Msg_serviceDesc = grpc.ServiceDesc{
+var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "osmosis.tokenfactory.v1beta1.Msg",
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
