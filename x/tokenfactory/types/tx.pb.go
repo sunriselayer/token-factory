@@ -6,6 +6,7 @@ package types
 import (
 	context "context"
 	fmt "fmt"
+
 	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/cosmos-sdk/types/msgservice"
 	_ "github.com/cosmos/cosmos-sdk/types/tx/amino"
